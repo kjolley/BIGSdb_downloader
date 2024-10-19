@@ -62,7 +62,7 @@ required using your client key and access token.
 To download you would run something like the following:
 
 ```
-/bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/profiles_csv"
+./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/profiles_csv"
 ```
 
 # Options
