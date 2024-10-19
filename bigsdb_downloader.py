@@ -35,7 +35,11 @@ BASE_API = {
 
 
 parser = argparse.ArgumentParser()
-
+parser.add_argument(
+    "--cron",
+    action="store_true",
+    help="Script is being run as a CRON job or non-interactively.",
+)
 parser.add_argument(
     "--db", required=False, help="Database config - only needed for setup"
 )
@@ -175,7 +179,11 @@ def get_new_session_token():
         sys.stderr.write(
             "Failed to get new session token. " + r.json()["message"] + "\n"
         )
-        if re.search("verification", r.json()["message"]):
+        if args.cron:
+            sys.stderr.write("Run interactively to fix.\n")
+        if re.search("verification", r.json()["message"]) or re.search(
+            "Invalid access token", r.json()["message"]
+        ):
             sys.stderr.write("New access token required - removing old one.\n")
             config = configparser.ConfigParser()
             file_path = Path(f"{args.token_dir}/access_tokens")
@@ -184,7 +192,7 @@ def get_new_session_token():
                 config.remove_section(args.key_name)
                 with open(file_path, "w") as configfile:
                     config.write(configfile)
-        raise ValueError("Failed to get new session token.")
+        exit(1)
 
 
 def get_service():
@@ -203,6 +211,10 @@ def get_service():
 
 
 def get_new_access_token():
+    if args.cron:
+        sys.stderr.write(f"No access token saved for {args.key_name}.\n")
+        sys.stderr.write("Run interactively to set.\n")
+        sys.exit(1)
     file_path = Path(f"{args.token_dir}/access_tokens")
     (request_token, request_secret) = get_new_request_token()
     db = get_db_value()
@@ -234,7 +246,8 @@ def get_new_access_token():
             config.write(configfile)
         return (token, secret)
     else:
-        raise ValueError("Failed to get new access token." + r.json()["message"])
+        sys.stderr.write("Failed to get new access token." + r.json()["message"])
+        sys.exit(1)
 
 
 def get_db_value():
@@ -260,7 +273,8 @@ def get_new_request_token():
         secret = r.json()["oauth_token_secret"]
         return (token, secret)
     else:
-        raise ValueError("Failed to get new request token." + r.json()["message"])
+        sys.stderr.write("Failed to get new request token." + r.json()["message"])
+        sys.exit(1)
 
 
 def get_client_credentials():
@@ -273,6 +287,10 @@ def get_client_credentials():
             client_id = config[args.key_name]["client_id"]
             client_secret = config[args.key_name]["client_secret"]
     if not client_id:
+        if args.cron:
+            sys.stderr.write(f"No client credentials saved for {args.key_name}.\n")
+            sys.stderr.write("Run interactively to set.\n")
+            sys.exit(1)
         client_id = input("Enter client id: ").strip()
         while len(client_id) != 24:
             print("Client ids are exactly 24 characters long.")
