@@ -119,13 +119,14 @@ def get_route(url, token, secret):
     elif r.status_code == 401:
         if re.search("unauthorized", r.json()["message"]):
             sys.stderr.write("Access denied - client is unauthorized\n")
-            return
+            sys.exit(1)
         else:
             sys.stderr.write("Invalid session token, requesting new one...\n")
             (token, secret) = get_new_session_token()
             get_route(url, token, secret)
     else:
         sys.stderr.write(f"Error: {r.text}\n")
+        sys.exit(1)
 
 
 def check_dir(directory):
