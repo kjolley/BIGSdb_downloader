@@ -104,14 +104,14 @@ def get_route(url, token, secret):
         sys.stderr.write(r.json()["message"])
     elif r.status_code == 401:
         if re.search("unauthorized", r.json()["message"]):
-            sys.stderr.write("Access denied - client is unauthorized")
+            sys.stderr.write("Access denied - client is unauthorized\n")
             return
         else:
             sys.stderr.write("Invalid session token, requesting new one...\n")
             (token, secret) = get_new_session_token()
             get_route(url, token, secret)
     else:
-        sys.stderr.write(f"Error: {r.text}")
+        sys.stderr.write(f"Error: {r.text}\n")
 
 
 def check_dir(directory):
@@ -172,7 +172,19 @@ def get_new_session_token():
 
         return (token, secret)
     else:
-        raise ValueError("Failed to get new session token." + r.json()["message"])
+        sys.stderr.write(
+            "Failed to get new session token. " + r.json()["message"] + "\n"
+        )
+        if re.search("verification", r.json()["message"]):
+            sys.stderr.write("New access token required - removing old one.\n")
+            config = configparser.ConfigParser()
+            file_path = Path(f"{args.token_dir}/access_tokens")
+            if file_path.is_file():
+                config.read(file_path)
+                config.remove_section(args.key_name)
+                with open(file_path, "w") as configfile:
+                    config.write(configfile)
+        raise ValueError("Failed to get new session token.")
 
 
 def get_service():
@@ -212,7 +224,7 @@ def get_new_access_token():
         print("Access Token Secret: " + secret + "\n")
         print(
             "This access token will not expire but may be revoked by the \n"
-            f"user or the service provider. It will be saved to {file_path}."
+            f"user or the service provider. It will be saved to \n{file_path}."
         )
         config = configparser.ConfigParser()
         if file_path.is_file():
