@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20241018
+# Version 20241019
 import argparse
 import os
 import stat
@@ -41,12 +41,12 @@ parser.add_argument(
     help="Script is being run as a CRON job or non-interactively.",
 )
 parser.add_argument(
-    "--db", required=False, help="Database config - only needed for setup"
+    "--db", required=False, help="Database config - only needed for setup."
 )
 parser.add_argument(
     "--key_name",
     required=True,
-    help="Name of API key - use a different name for each site",
+    help="Name of API key - use a different name for each site.",
 )
 parser.add_argument(
     "--output_file",
@@ -54,16 +54,16 @@ parser.add_argument(
     help="Path and filename of saved file. Output sent to STDOUT if not specified.",
 )
 parser.add_argument(
-    "--setup", action="store_true", help="Initial setup to obtain access token"
+    "--setup", action="store_true", help="Initial setup to obtain access token."
 )
 parser.add_argument("--site", required=False, choices=["PubMLST", "Pasteur"])
 parser.add_argument(
     "--token_dir",
     required=False,
     default="./.bigsdb_tokens",
-    help="Directory into which keys and tokens will be saved",
+    help="Directory into which keys and tokens will be saved.",
 )
-parser.add_argument("--url", required=False, help="URL for API call")
+parser.add_argument("--url", required=False, help="URL for API call.")
 args = parser.parse_args()
 
 
@@ -99,10 +99,20 @@ def get_route(url, token, secret):
     )
     r = session.get(url)
     if r.status_code == 200 or r.status_code == 201:
-        if re.search("json", r.headers["content-type"], flags=0):
-            print(r.json())
+        if args.output_file:
+            try:
+                with open(args.output_file, "w") as file:
+                    if re.search("json", r.headers["content-type"], flags=0):
+                        file.write(str(r.json()))
+                    else:
+                        file.write(r.text)
+            except IOError as e:
+                sys.stderr.write(f"An error occurred while writing to the file: {e}\n")
         else:
-            print(r.text)
+            if re.search("json", r.headers["content-type"], flags=0):
+                print(r.json())
+            else:
+                print(r.text)
     elif r.status_code == 400:
         sys.stderr.write("Bad request")
         sys.stderr.write(r.json()["message"])
