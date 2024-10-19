@@ -69,8 +69,7 @@ def main():
     if args.setup:
         (access_token, access_secret) = get_new_access_token()
         if not access_token or not access_secret:
-            print("Cannot get new access token.")
-            return
+            raise PermissionError("Cannot get new access token.")
     (token, secret) = retrieve_token("session")
     if not token or not secret:
         (token, secret) = get_new_session_token()
@@ -138,16 +137,15 @@ def retrieve_token(token_type):
     if file_path.is_file():
         config = configparser.ConfigParser()
         config.read(file_path)
-        token = config[args.key_name]["token"]
-        secret = config[args.key_name]["secret"]
-        return (token, secret)
+        if config.has_section(args.key_name):
+            token = config[args.key_name]["token"]
+            secret = config[args.key_name]["secret"]
+            return (token, secret)
     return (None, None)
 
 
 def get_new_session_token():
     file_path = Path(f"{args.token_dir}/session_tokens")
-    if file_path.is_file():
-        os.remove(file_path)
     (access_token, access_secret) = retrieve_token("access")
     if not access_token or not access_secret:
         (access_token, access_secret) = get_new_access_token()
@@ -166,6 +164,8 @@ def get_new_session_token():
         token = r.json()["oauth_token"]
         secret = r.json()["oauth_token_secret"]
         config = configparser.ConfigParser()
+        if file_path.is_file():
+            config.read(file_path)
         config[args.key_name] = {"token": token, "secret": secret}
         with open(file_path, "w") as configfile:
             config.write(configfile)
@@ -191,9 +191,7 @@ def get_service():
 
 
 def get_new_access_token():
-    file_path = Path(f"{args.token_dir}/{args.key_name}_access_token")
-    if file_path.is_file():
-        os.remove(file_path)
+    file_path = Path(f"{args.token_dir}/access_tokens")
     (request_token, request_secret) = get_new_request_token()
     db = get_db_value()
     print(
@@ -217,6 +215,8 @@ def get_new_access_token():
             f"user or the service provider. It will be saved to {file_path}."
         )
         config = configparser.ConfigParser()
+        if file_path.is_file():
+            config.read(file_path)
         config[args.key_name] = {"token": token, "secret": secret}
         with open(file_path, "w") as configfile:
             config.write(configfile)
