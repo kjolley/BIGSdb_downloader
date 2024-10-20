@@ -6,7 +6,7 @@ Use in place of `wget` or `curl` in download scripts to seamlessly handle the
 OAuth authentication required by the BIGSdb API.
 
 # Installation
-Install using git clone:
+Download using git clone:
 
 ```
 git clone https://github.com/kjolley/BIGSdb_downloader.git
