@@ -2,6 +2,9 @@
 Download alleles and profiles from PubMLST and BIGSdb 
 Pasteur via their API using authentication.
 
+Use in place of `wget` or `curl` in download scripts to seamlessly handle the
+OAuth authentication required by the BIGSdb API.
+
 # Installation
 Install using git clone:
 
