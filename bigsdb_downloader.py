@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20241019
+# Version 20241020
 import argparse
 import os
 import stat
@@ -116,6 +116,7 @@ def get_route(url, token, secret):
     elif r.status_code == 400:
         sys.stderr.write("Bad request")
         sys.stderr.write(r.json()["message"])
+        sys.exit(1)
     elif r.status_code == 401:
         if re.search("unauthorized", r.json()["message"]):
             sys.stderr.write("Access denied - client is unauthorized\n")
@@ -130,7 +131,7 @@ def get_route(url, token, secret):
 
 
 def check_dir(directory):
-    if os.path.isdir(args.token_dir):
+    if os.path.isdir(directory):
         if os.access(directory, os.W_OK):
             return
         else:
@@ -203,7 +204,7 @@ def get_new_session_token():
                 config.remove_section(args.key_name)
                 with open(file_path, "w") as configfile:
                     config.write(configfile)
-        exit(1)
+        sys.exit(1)
 
 
 def get_service():
