@@ -77,8 +77,8 @@ def main():
     (token, secret) = retrieve_token("session")
     if not token or not secret:
         (token, secret) = get_new_session_token()
-
-    get_route(args.url, token, secret)
+    if not args.setup:
+        get_route(args.url, token, secret)
 
 
 def check_required_args(args):
