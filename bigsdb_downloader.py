@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20241020
+# Version 20241023
 import argparse
 import os
 import stat
@@ -151,7 +151,7 @@ def check_dir(directory):
 def retrieve_token(token_type):
     file_path = Path(f"{args.token_dir}/{token_type}_tokens")
     if file_path.is_file():
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(interpolation=None)
         config.read(file_path)
         if config.has_section(args.key_name):
             token = config[args.key_name]["token"]
@@ -179,7 +179,7 @@ def get_new_session_token():
     if r.status_code == 200:
         token = r.json()["oauth_token"]
         secret = r.json()["oauth_token_secret"]
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(interpolation=None)
         if file_path.is_file():
             config.read(file_path)
         config[args.key_name] = {"token": token, "secret": secret}
@@ -197,7 +197,7 @@ def get_new_session_token():
             "Invalid access token", r.json()["message"]
         ):
             sys.stderr.write("New access token required - removing old one.\n")
-            config = configparser.ConfigParser()
+            config = configparser.ConfigParser(interpolation=None)
             file_path = Path(f"{args.token_dir}/access_tokens")
             if file_path.is_file():
                 config.read(file_path)
@@ -250,7 +250,7 @@ def get_new_access_token():
             "This access token will not expire but may be revoked by the \n"
             f"user or the service provider. It will be saved to \n{file_path}."
         )
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(interpolation=None)
         if file_path.is_file():
             config.read(file_path)
         config[args.key_name] = {"token": token, "secret": secret}
@@ -290,7 +290,7 @@ def get_new_request_token():
 
 
 def get_client_credentials():
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
     file_path = Path(f"{args.token_dir}/client_credentials")
     client_id = None
     if file_path.is_file():
