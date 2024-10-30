@@ -68,6 +68,24 @@ To download you would run something like the following:
 ./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/profiles_csv"
 ```
 
+It is also possible to use HTTP POST method calls and include a JSON payload.
+For example, to perform a BLAST query of a single abcZ sequence against the
+MLST scheme in the Neisseria database you can do:
+
+```
+./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body '{"sequence":"TTTGATACCGTTGCCGAAGGTTTGGGCGAAATTCGTGATTTATTGCGCCGTTATCATCATGTCAGCCATGAGTTGGAAAATGGTTCGAGTGAGGCTTTGTTGAAAGAACTCAACGAATTGCAACTTGAAATCGAAGCGAAGGACGGCTGGAAACTGGATGCGGCAGTCAAGCAGACTTTGGGGGAACTCGGTTTGCCGGAAAATGAAAAAATCGGCAACCTTTCCGGCGGTCAGAAAAAGCGCGTCGCCTTGGCTCAGGCTTGGGTGCAAAAGCCCGACGTATTGCTGCTGGACGAGCCGACCAACCATTTGGATATCGACGCGATTATTTGGCTGGAAAATCTGCTCAAAGCGTTTGAAGGCAGCTTGGTTGTGATTACCCACGACCGCCGTTTTTTGGACAATATCGCCACGCGGATTGTCGAACTCGATC"}'
+```
+For payloads larger than the command line character limit, e.g. whole genome 
+assemblies, you can write the JSON payload to a temporary file and pass this
+filename as an option. For example to query a FASTA file, contigs.fasta, 
+against the same scheme you can do:
+
+```
+file_contents=$(base64 -w 0 contigs.fasta)
+json_body=$(echo -n '{"base64":true,"details":false,"sequence": "'; echo -n "$file_contents"; echo '"}')
+echo "$json_body" > temp.json
+
+```
 # Options
 
 ```

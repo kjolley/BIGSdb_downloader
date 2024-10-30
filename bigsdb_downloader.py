@@ -14,13 +14,15 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20241023
+# Version 20241030
 import argparse
 import os
 import stat
 import re
 import configparser
 import sys
+import json
+from urllib.parse import parse_qs
 from pathlib import Path
 from rauth import OAuth1Service, OAuth1Session
 
@@ -35,6 +37,7 @@ BASE_API = {
 
 
 parser = argparse.ArgumentParser()
+
 parser.add_argument(
     "--cron",
     action="store_true",
@@ -44,9 +47,28 @@ parser.add_argument(
     "--db", required=False, help="Database config - only needed for setup."
 )
 parser.add_argument(
+    "--json_body",
+    required=False,
+    help="JSON body to be included in a POST call. If this is longer than "
+    "the command line limit (probably about 128kb) then you will need to "
+    "save the JSON payload to a file and use --json_body_file",
+)
+parser.add_argument(
+    "--json_body_file",
+    required=False,
+    help="File containing JSON to use in the body of a POST call.",
+)
+parser.add_argument(
     "--key_name",
     required=True,
     help="Name of API key - use a different name for each site.",
+)
+parser.add_argument(
+    "--method",
+    required=False,
+    choices=["GET", "POST"],
+    default="GET",
+    help="HTTP method",
 )
 parser.add_argument(
     "--output_file",
@@ -90,6 +112,33 @@ def check_required_args(args):
     else:
         if not args.url:
             parser.error("--url is required")
+    if args.json_body:
+        if args.method != "POST":
+            parser.error("You cannot use --json_body with --method=GET")
+        if args.json_body_file:
+            parser.error("You cannot use both --json_body and --json_body_file")
+
+    if args.json_body_file:
+        if args.method != "POST":
+            parser.error("You cannot use --json_body_file with --method=GET")
+
+
+def is_valid_json(json_string):
+    try:
+        json.loads(json_string)
+        return True
+    except ValueError:
+        return False
+
+
+def trim_url_args(url):
+    if not "?" in url:
+        return url, {}
+    trimmed_url, param_string = url.split("?")
+    params = parse_qs(param_string)
+    params = {k: int(v[0]) for k, v in params.items()}
+
+    return trimmed_url, params
 
 
 def get_route(url, token, secret):
@@ -97,7 +146,26 @@ def get_route(url, token, secret):
     session = OAuth1Session(
         client_key, client_secret, access_token=token, access_token_secret=secret
     )
-    r = session.get(url)
+    trimmed_url, request_params = trim_url_args(url)
+    if args.method == "GET":
+        r = session.get(trimmed_url, params=request_params)
+    else:
+        json_body = "{}"
+        if args.json_body:
+            json_body = args.json_body
+        elif args.json_body_file:
+            with open(args.json_body_file, "r") as file:
+                json_body = file.read()
+        if not is_valid_json(json_body):
+            parser.error("Body does not contain valid JSON")
+        r = session.post(
+            trimmed_url,
+            params=request_params,
+            data=json_body,
+            headers={"Content-Type": "application/json"},
+            header_auth=True,
+        )
+
     if r.status_code == 200 or r.status_code == 201:
         if args.output_file:
             try:
@@ -122,6 +190,8 @@ def get_route(url, token, secret):
             sys.stderr.write("Access denied - client is unauthorized\n")
             sys.exit(1)
         else:
+            sys.stderr.write(r.json()["message"] + "\n")
+            sys.exit(1)  # TODO Remove
             sys.stderr.write("Invalid session token, requesting new one...\n")
             (token, secret) = get_new_session_token()
             get_route(url, token, secret)
