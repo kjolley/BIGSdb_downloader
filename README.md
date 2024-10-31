@@ -90,14 +90,21 @@ echo "$json_body" > temp.json
 
 ```
 ./bigsdb_downloader.py --help
-usage: bigsdb_downloader.py [-h] [--cron] [--db DB] --key_name KEY_NAME [--output_file OUTPUT_FILE] [--setup]
+usage: bigsdb_downloader.py [-h] [--cron] [--db DB] [--json_body JSON_BODY] [--json_body_file JSON_BODY_FILE] --key_name
+                            KEY_NAME [--method {GET,POST}] [--output_file OUTPUT_FILE] [--setup]
                             [--site {PubMLST,Pasteur}] [--token_dir TOKEN_DIR] [--url URL]
 
 options:
   -h, --help            show this help message and exit
   --cron                Script is being run as a CRON job or non-interactively.
   --db DB               Database config - only needed for setup.
+  --json_body JSON_BODY
+                        JSON body to be included in a POST call. If this is longer than the command line limit (probably
+                        about 128kb) then you will need to save the JSON payload to a file and use --json_body_file
+  --json_body_file JSON_BODY_FILE
+                        File containing JSON to use in the body of a POST call.
   --key_name KEY_NAME   Name of API key - use a different name for each site.
+  --method {GET,POST}   HTTP method
   --output_file OUTPUT_FILE
                         Path and filename of saved file. Output sent to STDOUT if not specified.
   --setup               Initial setup to obtain access token.
