@@ -84,7 +84,7 @@ against the same scheme you can do:
 file_contents=$(base64 -w 0 contigs.fasta)
 json_body=$(echo -n '{"base64":true,"details":false,"sequence": "'; echo -n "$file_contents"; echo '"}')
 echo "$json_body" > temp.json
-
+./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body_file temp.json 
 ```
 # Options
 
