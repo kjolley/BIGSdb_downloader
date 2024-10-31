@@ -191,7 +191,6 @@ def get_route(url, token, secret):
             sys.exit(1)
         else:
             sys.stderr.write(r.json()["message"] + "\n")
-            sys.exit(1)  # TODO Remove
             sys.stderr.write("Invalid session token, requesting new one...\n")
             (token, secret) = get_new_session_token()
             get_route(url, token, secret)
