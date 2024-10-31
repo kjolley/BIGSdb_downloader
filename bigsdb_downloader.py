@@ -148,7 +148,11 @@ def get_route(url, token, secret):
     )
     trimmed_url, request_params = trim_url_args(url)
     if args.method == "GET":
-        r = session.get(trimmed_url, params=request_params)
+        r = session.get(
+            trimmed_url,
+            params=request_params,
+            headers={"User-Agent": "BIGSdb downloader"},
+        )
     else:
         json_body = "{}"
         if args.json_body:
@@ -162,7 +166,10 @@ def get_route(url, token, secret):
             trimmed_url,
             params=request_params,
             data=json_body,
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "BIGSdb downloader",
+            },
             header_auth=True,
         )
 
@@ -244,7 +251,7 @@ def get_new_session_token():
         access_token=access_token,
         access_token_secret=access_secret,
     )
-    r = session_request.get(url)
+    r = session_request.get(url, headers={"User-Agent": "BIGSdb downloader"})
     if r.status_code == 200:
         token = r.json()["oauth_token"]
         secret = r.json()["oauth_token_secret"]
@@ -307,7 +314,10 @@ def get_new_access_token():
     verifier = input("Please enter verification code: ")
     service = get_service()
     r = service.get_raw_access_token(
-        request_token, request_secret, params={"oauth_verifier": verifier}
+        request_token,
+        request_secret,
+        params={"oauth_verifier": verifier},
+        headers={"User-Agent": "BIGSdb downloader"},
     )
     if r.status_code == 200:
         token = r.json()["oauth_token"]
@@ -348,7 +358,9 @@ def get_new_request_token():
     db = get_db_value()
     service = get_service()
 
-    r = service.get_raw_request_token(params={"oauth_callback": "oob"})
+    r = service.get_raw_request_token(
+        params={"oauth_callback": "oob"}, headers={"User-Agent": "BIGSdb downloader"}
+    )
     if r.status_code == 200:
         token = r.json()["oauth_token"]
         secret = r.json()["oauth_token_secret"]
