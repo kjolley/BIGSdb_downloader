@@ -62,6 +62,7 @@ an access token will be saved that will be used for all future access.
 Session tokens will be obtained and renewed automatically by the script as 
 required using your client key and access token.
 
+# Downloading data
 To download you would run something like the following:
 
 ```
