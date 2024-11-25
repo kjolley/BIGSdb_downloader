@@ -33,11 +33,12 @@ The addresses you need to do this are:
 You then need to register this account with each database that you want to 
 access. This can also be done at the above addresses.
 
-Finally, you will need to obtain a client key and secret. Currently you need to
-request this via an E-mail to the following addresses (but an automated method
-to obtain personal keys will be available soon):
+Finally, you will need to obtain a client key and secret. For PubMLST, you can
+now create a personal key at [https://pubmlst.org/bigsdb](https://pubmlst.org/bigsdb). 
+For Pasteur, you currently need to request this via an E-mail to the following 
+address (but an automated method to obtain personal keys will be available 
+soon):
 
-* PubMLST - [pubmlst@biology.ox.ac.uk](mailto:pubmlst@biology.ox.ac.uk)
 * Pasteur - [bigsdb@pasteur.fr](mailto:bigsdb@pasteur.fr)
 
 # Credential setup
