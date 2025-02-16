@@ -2,7 +2,7 @@
 # Script to download authenticated resources from PubMLST and BIGSdb Pasteur
 # via their REST interfaces.
 # Written by Keith Jolley
-# Copyright (c) 2024, University of Oxford
+# Copyright (c) 2024-2025, University of Oxford
 # E-mail: keith.jolley@biology.ox.ac.uk
 #
 # BIGSdb_downloader is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20241030
+# Version 20250216
 import argparse
 import os
 import stat
@@ -178,19 +178,18 @@ def get_route(url, token, secret):
             try:
                 with open(args.output_file, "w") as file:
                     if re.search("json", r.headers["content-type"], flags=0):
-                        file.write(str(r.json()))
+                        file.write(json.dumps(r.json()))
                     else:
                         file.write(r.text)
             except IOError as e:
                 sys.stderr.write(f"An error occurred while writing to the file: {e}\n")
         else:
             if re.search("json", r.headers["content-type"], flags=0):
-                print(r.json())
+                print(json.dumps(r.json()))
             else:
                 print(r.text)
     elif r.status_code == 400:
-        sys.stderr.write("Bad request")
-        sys.stderr.write(r.json()["message"])
+        sys.stderr.write("Bad request - " + r.json()["message"])
         sys.exit(1)
     elif r.status_code == 401:
         if re.search("unauthorized", r.json()["message"]):
