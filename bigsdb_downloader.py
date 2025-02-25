@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20250216
+# Version 20250225
 import argparse
 import os
 import stat
@@ -136,9 +136,15 @@ def trim_url_args(url):
         return url, {}
     trimmed_url, param_string = url.split("?")
     params = parse_qs(param_string)
-    params = {k: int(v[0]) for k, v in params.items()}
 
-    return trimmed_url, params
+    processed_params = {}
+    for k, v in params.items():
+        try:
+            processed_params[k] = int(v[0])
+        except ValueError:
+            processed_params[k] = v[0]  # Keep the original value if it's not an integer
+
+    return trimmed_url, processed_params
 
 
 def get_route(url, token, secret):
