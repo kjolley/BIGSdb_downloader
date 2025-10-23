@@ -53,7 +53,7 @@ account has access to, e.g.
 ```
 This will then prompt you to enter the client key and client secret that you 
 have obtained. These will be stored in the token_directory
-(./bigsdb_tokens by default but can be set using --token_dir argument).
+(./.bigsdb_tokens by default but can be set using --token_dir argument).
 
 You will then be prompted to login to a particular page on the BIGSdb site and
 authorize delegation of your account access. This will provide you with a 
