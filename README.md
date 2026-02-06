@@ -45,7 +45,7 @@ soon):
 The script will handle multiple keys for each site if necessary - you can call
 these what you like but normally you would just have one that you can name the
 same as the site. To set up the credentials for the first time run with the
---setup option and provide the name of a database configuration that your 
+--setup option and provide the name of any database configuration that your 
 account has access to, e.g.
 
 ```
@@ -53,12 +53,14 @@ account has access to, e.g.
 ```
 This will then prompt you to enter the client key and client secret that you 
 have obtained. These will be stored in the token_directory
-(./.bigsdb_tokens by default but can be set using --token_dir argument).
+(./.bigsdb_tokens by default but can be set using --token_dir argument). 
 
 You will then be prompted to login to a particular page on the BIGSdb site and
 authorize delegation of your account access. This will provide you with a 
 verification code that you will be prompted to enter by the script. Once done
-an access token will be saved that will be used for all future access.
+an access token will be saved that will be used for all future access. This 
+token is valid for all databases on the site that your account is registered 
+for.
 
 Session tokens will be obtained and renewed automatically by the script as 
 required using your client key and access token.
