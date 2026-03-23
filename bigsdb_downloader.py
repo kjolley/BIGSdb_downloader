@@ -202,8 +202,9 @@ def get_route(url, token, secret):
             sys.stderr.write("Access denied - client is unauthorized\n")
             sys.exit(1)
         else:
-            sys.stderr.write(r.json()["message"] + "\n")
-            sys.stderr.write("Invalid session token, requesting new one...\n")
+            if not args.cron:
+                sys.stderr.write(r.json()["message"] + "\n")
+                sys.stderr.write("Invalid session token, requesting new one...\n")
             (token, secret) = get_new_session_token()
             get_route(url, token, secret)
     else:
