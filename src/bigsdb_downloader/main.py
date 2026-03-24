@@ -2,7 +2,7 @@
 # Script to download authenticated resources from PubMLST and BIGSdb Pasteur
 # via their REST interfaces.
 # Written by Keith Jolley
-# Copyright (c) 2024-2025, University of Oxford
+# Copyright (c) 2024-2026, University of Oxford
 # E-mail: keith.jolley@biology.ox.ac.uk
 #
 # BIGSdb_downloader is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# Version 20260323
+# Version 20260324
 import argparse
 import os
 import stat

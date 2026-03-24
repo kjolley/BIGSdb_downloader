@@ -1,0 +1,33 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "bigsdb-downloader"
+version = "1.0.5"
+description = "BIGSdb Downloader"
+readme = "README.md"
+authors = [{ name = "Keith Jolley", email = "keith.jolley@biology.ox.ac.uk" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = []
+dependencies = [
+	"rauth >= 0.7.3",
+]
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/kjolley/BIGSdb_downloader"
+
+[project.scripts]
+bigsdb-downloader = "bigsdb_downloader.main:main"

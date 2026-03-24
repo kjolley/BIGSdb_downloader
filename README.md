@@ -6,16 +6,47 @@ Use in place of `wget` or `curl` in download scripts to seamlessly handle the
 OAuth authentication required by the BIGSdb API.
 
 # Installation
-Download using git clone:
+It is recommended that you install this in a virtual environment.
+
+**Option 1 (simple, local project)**
 
 ```
-git clone https://github.com/kjolley/BIGSdb_downloader.git
+mkdir ~/bigsdb_downloader
+cd ~/bigsdb_downloader
+python -m venv .venv
+source .venv/bin/activate
+pip install bigsdb-downloader
 ```
-
-Then install the single dependency:
+You can deactivate the enviroment with:
 
 ```
-pip install rauth
+deactivate
+```
+Then run with:
+
+```
+~/bigsdb_downloader/.venv/bin/bigsdb-downloader
+```
+**Option 2 (recommended for command line use):**
+
+```
+pipx install bigsdb-downloader
+```
+Then run with:
+
+```
+bigsdb-downloader
+```
+**Option 3 (for scheduled jobs/cron):**
+
+```
+python -m venv ~/venvs/bigsdb-downloader
+~/venvs/bigsdb-downloader/bin/pip install bigsdb-downloader
+```
+Then run with:
+
+```
+~/venvs/bigsdb-downloader/bin/bigsdb-downloader
 ```
 # Accessing PubMLST and BIGSdb Pasteur APIs using authentication
 The BIGSdb platform used for PubMLST and BIGSdb Pasteur uses OAuth 
@@ -49,7 +80,7 @@ same as the site. To set up the credentials for the first time run with the
 account has access to, e.g.
 
 ```
-./bigsdb_downloader.py --key_name PubMLST --site PubMLST --db pubmlst_neisseria_isolates --setup
+bigsdb_downloader --key_name PubMLST --site PubMLST --db pubmlst_neisseria_isolates --setup
 ```
 This will then prompt you to enter the client key and client secret that you 
 have obtained. These will be stored in the token_directory
@@ -69,7 +100,7 @@ required using your client key and access token.
 To download you would run something like the following:
 
 ```
-./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/profiles_csv"
+bigsdb_downloader --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/profiles_csv"
 ```
 
 It is also possible to use HTTP POST method calls and include a JSON payload.
@@ -77,7 +108,7 @@ For example, to perform a BLAST query of a single abcZ sequence against the
 MLST scheme in the Neisseria database you can do:
 
 ```
-./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body '{"sequence":"TTTGATACCGTTGCCGAAGGTTTGGGCGAAATTCGTGATTTATTGCGCCGTTATCATCATGTCAGCCATGAGTTGGAAAATGGTTCGAGTGAGGCTTTGTTGAAAGAACTCAACGAATTGCAACTTGAAATCGAAGCGAAGGACGGCTGGAAACTGGATGCGGCAGTCAAGCAGACTTTGGGGGAACTCGGTTTGCCGGAAAATGAAAAAATCGGCAACCTTTCCGGCGGTCAGAAAAAGCGCGTCGCCTTGGCTCAGGCTTGGGTGCAAAAGCCCGACGTATTGCTGCTGGACGAGCCGACCAACCATTTGGATATCGACGCGATTATTTGGCTGGAAAATCTGCTCAAAGCGTTTGAAGGCAGCTTGGTTGTGATTACCCACGACCGCCGTTTTTTGGACAATATCGCCACGCGGATTGTCGAACTCGATC"}'
+bigsdb_downloader --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body '{"sequence":"TTTGATACCGTTGCCGAAGGTTTGGGCGAAATTCGTGATTTATTGCGCCGTTATCATCATGTCAGCCATGAGTTGGAAAATGGTTCGAGTGAGGCTTTGTTGAAAGAACTCAACGAATTGCAACTTGAAATCGAAGCGAAGGACGGCTGGAAACTGGATGCGGCAGTCAAGCAGACTTTGGGGGAACTCGGTTTGCCGGAAAATGAAAAAATCGGCAACCTTTCCGGCGGTCAGAAAAAGCGCGTCGCCTTGGCTCAGGCTTGGGTGCAAAAGCCCGACGTATTGCTGCTGGACGAGCCGACCAACCATTTGGATATCGACGCGATTATTTGGCTGGAAAATCTGCTCAAAGCGTTTGAAGGCAGCTTGGTTGTGATTACCCACGACCGCCGTTTTTTGGACAATATCGCCACGCGGATTGTCGAACTCGATC"}'
 ```
 For payloads larger than the command line character limit, e.g. whole genome 
 assemblies, you can write the JSON payload to a temporary file and pass this
@@ -88,13 +119,13 @@ against the same scheme you can do:
 file_contents=$(base64 -w 0 contigs.fasta)
 json_body=$(echo -n '{"base64":true,"details":false,"sequence": "'; echo -n "$file_contents"; echo '"}')
 echo "$json_body" > temp.json
-./bigsdb_downloader.py --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body_file temp.json 
+bigsdb_downloader --key_name PubMLST --site PubMLST --url "https://rest.pubmlst.org/db/pubmlst_neisseria_seqdef/schemes/1/sequence" --method POST --json_body_file temp.json 
 ```
 # Options
 
 ```
-./bigsdb_downloader.py --help
-usage: bigsdb_downloader.py [-h] [--cron] [--db DB] [--json_body JSON_BODY] [--json_body_file JSON_BODY_FILE] --key_name
+bigsdb_downloader --help
+usage: bigsdb_downloader [-h] [--cron] [--db DB] [--json_body JSON_BODY] [--json_body_file JSON_BODY_FILE] --key_name
                             KEY_NAME [--method {GET,POST}] [--output_file OUTPUT_FILE] [--setup]
                             [--site {PubMLST,Pasteur}] [--token_dir TOKEN_DIR] [--url URL]
 
