@@ -53,7 +53,7 @@ The BIGSdb platform used for PubMLST and BIGSdb Pasteur uses OAuth
 authentication that enables you to delegate access using your account to a
 script without having to share credentials.
 
-First you need to register an account for the appropriate site (see 
+**1.** First you need to register an account for the appropriate site (see 
 [https://pubmlst.org/site-accounts](https://pubmlst.org/site-accounts)).
 
 The addresses you need to do this are:
@@ -61,10 +61,12 @@ The addresses you need to do this are:
 * PubMLST: [https://pubmlst.org/bigsdb](https://pubmlst.org/bigsdb)
 * Pasteur: [https://bigsdb.pasteur.fr/cgi-bin/bigsdb/bigsdb.pl](https://bigsdb.pasteur.fr/cgi-bin/bigsdb/bigsdb.pl)
 
-You then need to register this account with each database that you want to 
-access. This can also be done at the above addresses.
+**2.** You then need to register this account with each database that you want to 
+access. This can also be done at the above addresses. Note that BIGSdb can now be
+configured to auto-register new accounts for every unrestricted public database, 
+so this step may no longer be necessary.
 
-Finally, you will need to obtain a client key and secret. For PubMLST, you can
+**3.** Finally, you will need to obtain a client key and secret. For PubMLST, you can
 now create a personal key at [https://pubmlst.org/bigsdb](https://pubmlst.org/bigsdb). 
 For Pasteur, you currently need to request this via an E-mail to the following 
 address (but an automated method to obtain personal keys will be available 
