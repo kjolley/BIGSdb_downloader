@@ -66,13 +66,12 @@ access. This can also be done at the above addresses. Note that BIGSdb can now b
 configured to auto-register new accounts for every unrestricted public database, 
 so this step may no longer be necessary.
 
-**3.** Finally, you will need to obtain a client key and secret. For PubMLST, you can
-now create a personal key at [https://pubmlst.org/bigsdb](https://pubmlst.org/bigsdb). 
-For Pasteur, you currently need to request this via an E-mail to the following 
-address (but an automated method to obtain personal keys will be available 
-soon):
+**3.** Finally, you will need to obtain a client key and secret. 
 
-* Pasteur - [bigsdb@pasteur.fr](mailto:bigsdb@pasteur.fr)
+* For PubMLST, you can
+  now create a personal key at [https://pubmlst.org/bigsdb](https://pubmlst.org/bigsdb). 
+* For Pasteur, please find details at 
+  [https://bigsdb.pasteur.fr/requesting-api-key/](https://bigsdb.pasteur.fr/requesting-api-key/).
 
 # Credential setup
 The script will handle multiple keys for each site if necessary - you can call
