@@ -10,7 +10,7 @@ where = ["src"]
 
 [project]
 name = "bigsdb-downloader"
-version = "1.0.5"
+version = "1.0.6"
 description = "BIGSdb Downloader"
 readme = "README.md"
 authors = [{ name = "Keith Jolley", email = "keith.jolley@biology.ox.ac.uk" }]
