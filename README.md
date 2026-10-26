@@ -5,6 +5,11 @@ Pasteur via their API using authentication.
 Use in place of `wget` or `curl` in download scripts to seamlessly handle the
 OAuth authentication required by the BIGSdb API.
 
+> If you don't know exactly which API calls you need or what is available, 
+  check out [BIGSip](https://github.com/MartinRethoret/BIGSip) by Martin 
+  Rethoret. This provides a wrapper around BIGSdb_downloader to list available
+  data and automatically build the URLs to download it.
+
 # Installation
 It is recommended that you install this in a virtual environment.
 
